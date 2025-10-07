@@ -8,7 +8,7 @@ const defaultFontSize = 72
 const stageHeightWidth = 700
 
 export default function Home() {
-  const defaultImagePath = './assets/1.jpg'
+  const defaultImagePath = '/assets/1.jpg'
   const [displayedImage, setDisplayedImage] = useState(defaultImagePath);
   const [images, setImages] = useState([]);
   const [imgScale, setImgScale] = useState(1)
@@ -20,10 +20,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetch('/api/images').then(res => res.json()).then(data => {
+    fetch('images.json').then(res => res.json()).then(data => {
       const newImages = [];
       for (const imageFile in data) {
-        const imageFilePath = '.assets/' + data[imageFile]
+        const imageFilePath = '/assets/' + data[imageFile]
         const image =
         <img
           key={imageFile}
