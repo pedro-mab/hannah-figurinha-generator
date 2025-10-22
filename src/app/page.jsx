@@ -24,16 +24,22 @@ export default function Home() {
   };
 
   const handleExport = () => {
+    if (transformerRef.current) {
+      transformerRef.current.hide();
+    };
     const dataURL = stageRef.current.toDataURL({
       pixelRatio: 1 // double resolution
     });
     
     const link = document.createElement('a');
-    link.download = 'figurinha.png';
+    link.download = `figurinha_${displayedText}.png`;
     link.href = dataURL;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    if (transformerRef.current) {
+      transformerRef.current.show();
+    };
   };
 
   useEffect(() => {
@@ -91,7 +97,7 @@ export default function Home() {
 
   return (
     <div className="grid items-center min-h-screen p-8 font-comic justify-items-center bg-[url(/assets/header-bg.png)] bg-no-repeat">
-      <img className='justify-self-start h-60' src='assets/logo2.png'></img>      
+      <img className='justify-self-start h-60' src='assets/logo.png'></img>      
       <main className="flex gap-10 items-start">
         <div className='flex flex-col px-5 py-5 -skew-y-3 -skew-x-1 bg-card'>
           <div className="grid grid-cols-2 gap-8 px-5 py-5 skew-y-3 skew-x-1 justify-items-center">
