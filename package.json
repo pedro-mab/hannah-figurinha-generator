@@ -10,6 +10,7 @@
     "api": "cd api && flask run --no-debugger"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "konva": "^10.0.2",
     "next": "15.5.2",
     "postcss": "^8.5.6",
