@@ -96,7 +96,7 @@ export default function Home() {
   }, [displayedText, isEditing]);
 
   return (
-    <div className="grid items-center min-h-screen p-8 font-comic justify-items-center bg-[url(/assets/header-bg.png)] bg-no-repeat">
+    <div className="grid items-center min-h-screen p-8 font-comic justify-items-center bg-[url(/hannah-figurinha-generator/public/assets/header-bg.png)] bg-no-repeat">
       <img className='justify-self-start h-60' src='assets/logo.png'></img>      
       <main className="flex gap-10 items-start">
         <div className='flex flex-col px-5 py-5 -skew-y-3 -skew-x-1 bg-card'>
