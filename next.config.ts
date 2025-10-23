@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  basePath: 'hannah-figurinha-generator',
+  basePath: '/hannah-figurinha-generator',
 };
 
 export default nextConfig;
