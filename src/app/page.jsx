@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Image, Transformer, Text } from 'react-konva';
 import useImage from 'use-image'
-import FontSelector from './FontSelector'
 
 const defaultFontSize = 120
 const stageHeightWidth = 700
+const textFontStyle = 'normal'
 
 export default function Home() {
   const stageRef = useRef(null);
@@ -22,6 +22,13 @@ export default function Home() {
   const updateCanvasImage = (newImage) => {
     setDisplayedImage(newImage)
   };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+      if (file) {
+        setDisplayedImage(URL.createObjectURL(file));
+      }
+  }
 
   const handleExport = () => {
     if (transformerRef.current) {
@@ -52,7 +59,7 @@ export default function Home() {
           key={imageFile}
           onClick={() => {updateCanvasImage(imageFilePath); setSelectedImgKey(imageFile)}}
           src={imageFilePath}
-          className={`w-[128px] h-[128px] min-w-[128px] bg-gray-300 border-3 cursor-pointer ${imageFile === selectedImgKey ? 'border-purple-500' : 'border-gray-300'}`}
+          className={`w-[128px] h-[128px] min-w-[128px] border-3 cursor-pointer ${imageFile === selectedImgKey ? 'border-border' : 'border-gray-300'}`}
         />
         newImages.push(image);
       }
@@ -68,11 +75,13 @@ export default function Home() {
   const [blurTextColor, setBlurTextColor] = useState("#ffffff");
   const [shadowTextColor, setShadowTextColor] = useState("#ff00dd");
   const [strokeTextColor, setStrokeTextColor] = useState("#000000");
-  const [strokeWidth, setStrokeWidth] = useState(4)
-  const [textFont, setTextFont] = useState('Comic Sans MS');
+  const [strokeWidth, setStrokeWidth] = useState(10);
+  const [shadowDistanceX, setShadowDistanceX] = useState(0);
+  const [shadowDistanceY, setShadowDistanceY] = useState(0);
+  const [textFont, setTextFont] = useState('Arial');
 
-  const handleFontChange = (value) => {
-    setTextFont(value)
+  const handleFontChange = (event) => {
+    setTextFont(event.target.value)
   }
 
   const handleStageClick = () => {
@@ -96,26 +105,30 @@ export default function Home() {
   }, [displayedText, isEditing]);
 
   return (
-    <div className="grid items-center min-h-screen p-8 font-comic justify-items-center bg-[url(/hannah-figurinha-generator/assets/header-bg.png)] bg-no-repeat">
-      <img className='justify-self-start h-60' src='assets/logo.png'></img>      
-      <main className="flex gap-10 items-start">
-        <div className='flex flex-col px-5 py-5 -skew-y-3 -skew-x-1 bg-card'>
-          <div className="grid grid-cols-2 gap-8 px-5 py-5 skew-y-3 skew-x-1 justify-items-center">
-            <p className="col-span-2 text-2xl">Imagem</p>
-            <div className="grid grid-cols-2 col-span-2 gap-5 px-3 py-3 overflow-auto max-h-100 border-1">
+    <div className="grid items-center min-h-screen p-8 font-comic justify-items-center accent-foreground bg-[url(/hannah-figurinha-generator/assets/header-bg.png)] bg-no-repeat">
+      <img className='justify-self-start h-60' src='assets/logo.png'></img>
+      <main className="flex items-start gap-10">        
+          <div className="grid gap-5 p-10 justify-items-center sidebar-left relative">
+            <p className="text-2xl">Imagem</p>
+            <div className='grid justify-items-center gap-3 p-3 bg-card-element'>
+              <input className='border-1 w-full px-2 py-1' type='text' placeholder='Insira um link...' onChange={(e) => setDisplayedImage(e.target.value)}></input>
+              <input className='' type='file' accept="image/*" onChange={handleImageUpload}></input>
+            </div>
+            <div className="grid grid-cols-2 gap-5 p-3 overflow-auto bg-card-element w-full max-h-100">
               {images}
             </div>
+            <div className='flex gap-5'>
             <div className="grid justify-items-center">
-              <p>Zoom:</p>
+              <p>Zoom</p>
               <input type="range" min="1" max="4" step="any" value={imgScale} onChange={(e) => setImgScale(parseFloat(e.target.value))}/>
             </div>
             <div className="grid justify-items-center">
-              <p>Saturação:</p>
+              <p>Saturação</p>
               <input type="range" min="0" max="10" step="any" value={imgSaturation} onChange={(e) => setImgSaturation(parseFloat(e.target.value))}/>
             </div>
+            </div>
           </div>
-        </div>        
-        <div className="col-start-2 row-span-2 border-4">
+        <div className="col-start-2 row-span-2 border-4 shadow-2xl shadow-card">
           <Stage
             width={stageHeightWidth}
             height={stageHeightWidth}
@@ -138,36 +151,65 @@ export default function Home() {
             </Layer>
 
             <Layer
-              x={stageHeightWidth / 3}
+              x={stageHeightWidth / 4}
               y={stageHeightWidth / 2}
               ref={textLayerRef}
               draggable
               onClick={handleTextClick}
               onDragStart={handleTextClick}
             >
-              <Text
-                text={displayedText}
-                fontSize={defaultFontSize}
-                fontFamily={textFont}
-                fill={shadowTextColor}
-                offsetX={-5}
-                offsetY={-5}
-              />
+              
 
               <Text
                 text={displayedText}
+                fontStyle={textFontStyle}
                 fontSize={defaultFontSize}
                 fontFamily={textFont}
                 shadowColor={blurTextColor}
                 shadowEnabled={true}
-                shadowOpacity={10}
-                shadowBlur={15}
+                shadowOpacity={1}
+                shadowBlur={20}
                 fill={blurTextColor}
+              />
+
+              <Text
+                text={displayedText}
+                fontStyle={textFontStyle}
+                fontSize={defaultFontSize}
+                fontFamily={textFont}
+                shadowColor={blurTextColor}
+                shadowEnabled={true}
+                shadowOpacity={1}
+                shadowBlur={20}
+                fill={blurTextColor}
+              />
+
+              <Text
+                text={displayedText}
+                fontStyle={textFontStyle}
+                fontSize={defaultFontSize}
+                fontFamily={textFont}
+                shadowColor={blurTextColor}
+                shadowEnabled={true}
+                shadowOpacity={1}
+                shadowBlur={30}
+                fill={blurTextColor}
+              />
+
+              <Text
+                text={displayedText}
+                fontStyle={textFontStyle}
+                fontSize={defaultFontSize}
+                fontFamily={textFont}
+                fill={shadowTextColor}
+                offsetX={shadowDistanceX}
+                offsetY={shadowDistanceY}
               />
 
               <Text
                 fillAfterStrokeEnabled
                 text={displayedText}
+                fontStyle={textFontStyle}
                 fontSize={defaultFontSize}
                 fontFamily={textFont}
                 fill={mainTextColor}
@@ -186,38 +228,51 @@ export default function Home() {
             </Layer>
           </Stage>
         </div>
-        <div className='grid justify-items-center gap-4'>
-          <div className='flex flex-col px-5 py-5 bg-card skew-1'>
-            <div className="grid grid-cols-2 gap-5 px-5 py-5 rounded justify-items-center -skew-1">
-              <p className="col-span-2 text-2xl">Texto</p>
+        <div>
+          <div className='grid p-10 gap-2 sidebar-right relative'>
+            <div className="justify-self-center text-2xl">Texto</div>
+            <div className="flex flex-col p-3 gap-3 bg-card-element">              
               <textarea
-                className="border-1 border-white px-3 py-3 col-span-2 h-[50px] w-full"
+                className="border-1 border-white px-3 py-3 h-[50px] w-full"
                 type="text"
                 value={displayedText}
                 onChange={(e) => setDisplayedText(e.target.value)}
                 placeholder="Insira uma doença..."
               />
-              <FontSelector onValueChange={handleFontChange}></FontSelector>
-              <div className="grid justify-items-center w-full">
-                <p>Principal:</p>
+              <select className='self-center py-2 px-2 bg-card border-1 w-full' value={textFont} onChange={handleFontChange}>
+                <option value='Arial'>Arial</option>
+                <option value='Comic Sans MS'>Comic Sans</option>
+              </select>
+            </div>
+            <div className='justify-self-center text-2xl'>Cores</div>
+            <div className='grid grid-cols-2 gap-3 p-3 bg-card-element'>
+              <div className="flex flex-col items-center">
+                <p>Principal</p>
                 <input className="w-full" type="color" value={mainTextColor} onChange={(e) => setMainTextColor(e.target.value)}/>
               </div>
-              <div className="grid justify-items-center w-full">
-                <p>Brilho:</p>
+              <div className="flex flex-col items-center">
+                <p>Brilho</p>
                 <input className="w-full" type="color" value={blurTextColor} onChange={(e) => setBlurTextColor(e.target.value)}/>
               </div>
-              <div className="grid justify-items-center w-full">
-                <p>Fundo:</p>
-                <input className="w-full" type="color" value={shadowTextColor} onChange={(e) => setShadowTextColor(e.target.value)}/>
+            </div>
+            <div className='flex flex-col gap-2 p-3 bg-card-element'>
+              <span className='self-center'>Contorno</span>
+              <div className='flex items-center gap-2'>                
+                <input className='' type="color" value={strokeTextColor} onChange={(e) => setStrokeTextColor(e.target.value)}/>                          
+                <input type="range" min="0" max="20" step="any" value={strokeWidth} onChange={(e) => setStrokeWidth(parseFloat(e.target.value))}/>
               </div>
-              <div className="grid justify-items-center w-full">
-                <p>Contorno:</p>
-                <input className="w-full" type="color" value={strokeTextColor} onChange={(e) => setStrokeTextColor(e.target.value)}/>
-              </div>
-            </div>          
+            </div>
+            <div className='flex flex-col gap-2 p-3 bg-card-element'>
+              <span className="self-center">Fundo</span>
+              <input className="w-20 self-center" type="color" value={shadowTextColor} onChange={(e) => setShadowTextColor(e.target.value)}/>
+              <span>Distância Horizontal</span>
+              <input type="range" min="-100" max="100" step="any" value={shadowDistanceX * -1} onChange={(e) => setShadowDistanceX(parseFloat(e.target.value) * -1)}/>
+              <span>Distância Vertical</span>
+              <input type="range" min="-100" max="100" step="any" value={shadowDistanceY} onChange={(e) => setShadowDistanceY(parseFloat(e.target.value))}/>
+            </div>
           </div>
-          <button className='bg-card p-4 text-2xl cursor-pointer' onClick={handleExport}>Salvar</button>
-        </div>        
+            <div className='justify-self-center p-4 m-4 text-2xl cursor-pointer bg-card' onClick={handleExport}>Salvar</div>
+        </div>
       </main>
     </div>
   );
